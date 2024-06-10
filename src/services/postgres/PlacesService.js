@@ -25,7 +25,12 @@ class PlacesService {
         return rows[0].id;
     }
 
-    async getPlaces() {
+    async getPlaces(pid = '') {
+        if (pid) {
+            const rows = await this._dbUtils.select(['id', 'name'], tableNames, 'id = $1', [pid]);
+            if (!rows.length) throw new NotFoundError('Pujasera Tidak ditemukan');
+            return rows;
+        }
         const columns = ['places.id', 'users.username AS owner_name', 'places.name AS place_name', 'lat', 'long'];
         return await this._dbUtils.select(columns, tableNames, '', [], ['users'], ['owner_id']);
     }

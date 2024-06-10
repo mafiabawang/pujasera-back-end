@@ -25,18 +25,17 @@ class TenantsService {
         return rows[0].id;
     }
 
-    async getTenants(owner_id = '') {
-        const rows = await this._dbUtils.select(['role'], 'users', 'id = $1', [owner_id]);
-        if (!rows.length && owner_id) throw new NotFoundError('User tidak ditemukan');
-
-        if (owner_id && rows[0].role !== 3) throw new InvariantError('Anda tidak mempunyai akses');
+    async getTenants(pId = '') {
 
         const column = ['tenants.id', 'users.username AS seller_name', 'places.name AS place_name', 'tenants.name AS tenant_name'];
         const joinTables = ['places', 'users'];
         const joinConditions = ['place_id', 'seller_id'];
 
-        if (owner_id) return await this._dbUtils.select(column, tableNames, 'places.owner_id = $1', [owner_id], joinTables, joinConditions);
-
+        if (pId) {
+            const rows = await this._dbUtils.select(column, tableNames, 'place_id = $1', [pId], joinTables, joinConditions);
+            if (!rows.length) throw new NotFoundError('Place Tidak ditemukan');
+            return rows;
+        }
 
         return await this._dbUtils.select(column, tableNames, '', [], joinTables, joinConditions);
     }

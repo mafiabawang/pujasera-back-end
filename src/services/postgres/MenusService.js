@@ -25,7 +25,18 @@ class MenusService {
         return rows[0].id;
     }
 
-    async getMenus() {
+    async getMenus(tId = '', pId = '') {
+        const column = ['menus.id', 'menus.name AS menu_name', 'price', 'qty'];
+        const joinTables = ['tenants'];
+        const joinConditions = ['tenant_id'];
+        if (tId) {
+            const rows = await this._dbUtils.select(['id', 'name', 'description', 'price', 'qty'], tableNames, 'tenant_id = $1', [tId]);
+            if (!rows.length) throw new NotFoundError('Menu tidak ditemukan');
+            return rows;
+        }
+
+        if (pId) return await this._dbUtils.select(column, tableNames, 'place_id = $1', [pId], joinTables, joinConditions);
+
         return await this._dbUtils.select(['id', 'name', 'description', 'price', 'qty'], tableNames);
     }
 

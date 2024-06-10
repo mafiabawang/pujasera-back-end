@@ -59,7 +59,13 @@ class UsersService {
         return rows[0].id;
     }
 
-    async getUsers() {
+    async getUsers(role = '') {
+
+        if (role) {
+            if (!(role >= 1 && role <= 4)) throw new InvariantError('Role tidak valid. Role harus diantara 1-4');
+            return this._dbUtils.select(['id', 'username'], tableNames, 'role = $1', [role]);
+        }
+
         return this._dbUtils.select(['id', 'username', 'role'], tableNames);
     }
 

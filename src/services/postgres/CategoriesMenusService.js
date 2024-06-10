@@ -25,7 +25,12 @@ class CategoriesMenusService {
         return rows[0].id;
     }
 
-    async getCategoriesMenus() {
+    async getCategoriesMenus(tId = '') {
+        if (tId) {
+            const rows = await this._dbUtils.select(['id', 'name'], tableNames, 'tenant_id = $1', [tId]);
+            if (!rows.length) throw new NotFoundError('Kategori Menu tidak ditemukan');
+            return rows;
+        }
         return await this._dbUtils.select(['id', 'name'], tableNames);
     }
 

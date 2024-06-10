@@ -1,15 +1,12 @@
+const autoBind = require('auto-bind');
+
 class PlacesHandler {
     constructor(placesService, usersService, validator) {
         this._placesService = placesService;
         this._usersService = usersService;
         this._validator = validator;
 
-        this.postPlaceHandler = this.postPlaceHandler.bind(this);
-        this.getPlacesHandler = this.getPlacesHandler.bind(this);
-        this.getPlaceByIdHandler = this.getPlaceByIdHandler.bind(this);
-        this.putPlaceByIdHandler = this.putPlaceByIdHandler.bind(this);
-        this.putPlaceOwnerByIdHandler = this.putPlaceOwnerByIdHandler.bind(this);
-        this.deletePlaceByIdHandler = this.deletePlaceByIdHandler.bind(this);
+        autoBind(this);
     }
 
     async postPlaceHandler(request, h) {
@@ -32,8 +29,9 @@ class PlacesHandler {
         return response;
     }
 
-    async getPlacesHandler() {
-        const places = await this._placesService.getPlaces();
+    async getPlacesHandler(request) {
+        const { pId } = request.query;
+        const places = await this._placesService.getPlaces(pId);
 
         return {
             status: 'success',

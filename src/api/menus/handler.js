@@ -1,3 +1,5 @@
+const autoBind = require('auto-bind');
+
 class MenusHandler {
     constructor(menusService, tenantsService, categoriesMenusService, validator) {
         this._menusService = menusService;
@@ -5,11 +7,7 @@ class MenusHandler {
         this._categoriesMenusService = categoriesMenusService;
         this._validator = validator;
 
-        this.postMenuHandler = this.postMenuHandler.bind(this);
-        this.getMenusHandler = this.getMenusHandler.bind(this);
-        this.getMenuByIdHandler = this.getMenuByIdHandler.bind(this);
-        this.putMenuByIdHandler = this.putMenuByIdHandler.bind(this);
-        this.deleteMenuByIdHandler = this.deleteMenuByIdHandler.bind(this);
+        autoBind(this);
     }
 
     async postMenuHandler(request, h) {
@@ -32,8 +30,9 @@ class MenusHandler {
         return response;
     }
 
-    async getMenusHandler() {
-        const menus = await this._menusService.getMenus();
+    async getMenusHandler(request) {
+        const { tId, pId } = request.query;
+        const menus = await this._menusService.getMenus(tId, pId);
         return {
             status: 'success',
             data: {

@@ -1,3 +1,5 @@
+const autoBind = require('auto-bind');
+
 class TenantsHandler {
     constructor(tenantsService, usersService, placesService, validator) {
         this._tenantsService = tenantsService;
@@ -5,12 +7,7 @@ class TenantsHandler {
         this._placesService = placesService;
         this._validator = validator;
 
-        this.postTenantHandler = this.postTenantHandler.bind(this);
-        this.getTenantsHandler = this.getTenantsHandler.bind(this);
-        this.getTenantByIdHandler = this.getTenantByIdHandler.bind(this);
-        this.putTenantByIdHandler = this.putTenantByIdHandler.bind(this);
-        this.putTenantSellerByIdHandler = this.putTenantSellerByIdHandler.bind(this);
-        this.deleteTenantByIdHandler = this.deleteTenantByIdHandler.bind(this);
+        autoBind(this);
     }
 
     async postTenantHandler(request, h) {
@@ -36,9 +33,9 @@ class TenantsHandler {
     }
 
     async getTenantsHandler(request) {
-        const { owner_id } = request.query;
+        const { pId } = request.query;
 
-        const tenants = await this._tenantsService.getTenants(owner_id);
+        const tenants = await this._tenantsService.getTenants(pId);
 
         return {
             status: 'success',

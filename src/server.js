@@ -1,8 +1,4 @@
-const dotenv = require('dotenv');
-
-if (process.env.NODE_ENV !== 'production') dotenv.config();
-else dotenv.config({ path: '.prod.env' });
-
+require('dotenv').config();
 const Hapi = require('@hapi/hapi');
 const ClientError = require('./exceptions/ClientError');
 

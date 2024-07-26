@@ -29,9 +29,8 @@ class PlacesHandler {
         return response;
     }
 
-    async getPlacesHandler(request) {
-        const { pId } = request.query;
-        const places = await this._placesService.getPlaces(pId);
+    async getPlacesHandler() {
+        const places = await this._placesService.getPlaces();
 
         return {
             status: 'success',
